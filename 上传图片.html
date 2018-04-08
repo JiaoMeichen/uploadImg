@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.logo_bg {
+				width: 100%;
+				height: 148px;
+				display: inline-block;
+			}
+			
+			.img_logo_wrap {
+				float: left;
+				width: 148px;
+				height: 148px;
+				border: 1px dashed #bababa;
+				padding: 26px;
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				-o-box-sizing: border-box;
+				-ms-box-sizing: border-box;
+				box-sizing: border-box;
+				position: relative;
+			}
+			
+			.logo_bg img {
+				max-width: 100px;
+				max-height: 100%;
+				float: left;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				-ms-transform: translate(-50%, -50%);
+				-moz-transform: translate(-50%, -50%);
+				-webkit-transform: translate(-50%, -50%);
+				-o-transform: translate(-50%, -50%);
+			}
+			
+			.logo_btn {
+				position: relative;
+				height: 80px;
+				margin: 0 60px;
+			}
+			
+			.logo_btn .logo_btn_bg {
+				display: inline-block;
+				width: 140px;
+				height: 48px;
+				border-radius: 20px;
+				color: #fff;
+				background: #f66;
+				font-size: 16px;
+				text-align: center;
+				line-height: 48px;
+			}
+			
+			.logo_btn .file_own {
+				opacity: 0;
+				z-index: 10;
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 80px;
+				width: 210px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div style="display:inline-block;">
+			<!--要展示的图片-->
+			<div class="logo_bg">
+
+				<div class="img_logo_wrap">
+					<img class="acc_imgin img2 img_logo" src="http://placehold.it/100x100">
+				</div>
+				<input class="value_hidden" value="" type="hidden" />
+			</div>
+			<!--点击上传按钮，a标签为显示样式的区域，input为file区域-->
+			<div class="logo_btn">
+				<a href="javascript:;" class="logo_btn_bg">点击上传</a>
+				<input type="file" name="file" class="file_own" id="file_own" accept="image/png" onchange="uploadFile('value_hidden','file_own','img_logo')" />
+			</div>
+
+		</div>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script src="js/layer.js"></script>
+		<script>
+			var new_common_develop = "http://dev.pandawanwan.cn/" //正式	
+			var objUrl;
+			/*上传身份证：
+			 * file：hidden里填充的值，返回结果,hidden的class
+			 * id：input  file的id
+			 * img：用于图片显示
+			 * */
+			/*图片类型：jpg png jpeg
+			 *图片大小：1MB
+			 * */
+			function uploadFile(file, id, img) {
+				/*显示图片*/
+				var _this = $("#" + id).get(0);
+				console.log("图片大小：" + (_this.files[0].size / 1024).toFixed(2) + "kb")
+				if((_this.files[0].size / 1024).toFixed(2) > 1024) { //大于1M
+					layer.open({
+						title: '提示',
+						content: '图片大小请控制在1MB之内哦~'
+					});
+					return;
+				} else {
+					if(_this.files && _this.files[0]) {
+						objUrl = getObjectURL(_this.files[0]);
+						if(objUrl) {
+							$("." + img).attr("src", objUrl);
+							$("#" + id).click(function(e) {
+								$("." + img).attr("src", objUrl);
+							});
+						} else {
+							//IE下，使用滤镜
+							_this.select();
+							var imgSrc = document.selection.createRange().text;
+							var localImagId = document.getElementsByClassName("idcard_bg")[0];
+							//图片异常的捕捉，防止用户修改后缀来伪造图片
+							try {
+								preload.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = data;
+							} catch(e) {
+								_this._error("filter error");
+								return;
+							}
+							_this.img.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale',src=\"" + data + "\")";
+						}
+					}
+				}
+
+				/*end显示图片*/
+				/*上传图片：使用FormData对象上传图片*/
+				/*1.创建一个FormData空对象，然后使用append方法添加key/value*/
+				var formData = new FormData();
+				formData.append('file', $('#' + id)[0].files[0]);
+				$.ajax({
+						url: new_common_develop + 'uploadIdNum',
+						type: 'POST',
+						cache: false,
+						data: formData,
+						processData: false,
+						contentType: false,
+						beforeSend: function(request) {
+							request.setRequestHeader("userId", 1);
+							layer.msg('正在上传，请稍后~', {
+								time: 100000
+							});
+
+						},
+						success: function(res) {
+							console.log(res)
+							if(res == "-1") { /*失败*/
+								layer.open({
+									title: '提示',
+									content: '图片大小请控制在1MB之内哦~'
+								});
+							} else { /*成功*/
+								layer.open({
+									title: '提示',
+									content: '上传成功！'
+								});
+								$("." + file).val(res.data.fileName); /*显示结果到value中*/
+							}
+						},
+						error: function(res) {
+							layer.open({
+								title: '提示',
+								content: '上传失败，请稍后再试~'
+							});
+						}
+					})
+					/*end上传图片*/
+			}
+
+			//建立一個可存取到該file的url
+			function getObjectURL(file) {
+				var url = null;
+				if(window.createObjectURL != undefined) { // basic
+					url = window.createObjectURL(file);
+				} else if(window.URL != undefined) { // mozilla(firefox)
+					url = window.URL.createObjectURL(file);
+				} else if(window.webkitURL != undefined) { // webkit or chrome
+					url = window.webkitURL.createObjectURL(file);
+				}
+				return url;
+			}
+		</script>
+	</body>
+
+</html>

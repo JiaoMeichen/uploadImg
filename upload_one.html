@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>单图片</title>
+		<style type="text/css">
+			.syUpload_img_wrap{
+				overflow: hidden;
+			}
+			.syUpload_img_list{
+				width: 60px;
+				height: 60px;
+				background: #f2f2f2;
+				padding: 5px;
+				box-sizing: border-box;
+				display: -webkit-box;
+				display: -moz-box;
+				display: -webkit-flex;
+				display: -ms-flexbox;
+				display: flex;
+				-webkit-box-pack: center;
+				-ms-flex-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				-webkit-box-align: center;
+				-ms-flex-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				float: left;
+				margin-right: 10px;
+				margin-bottom: 10px;
+				position: relative;
+			}
+			.syUpload_img_wrap img{
+				max-width: 50px;
+				max-height: 50px;
+			}
+			
+			
+			.syUpload_img_list input.file{
+				position: absolute;left: 0 ;top: 0;opacity: 0;width: 100%;height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<!--上传单张照片，需改动1、img的class  2、input hidden的class  3、input  file的class 和uploadFile()参数-->
+		<div class="syUpload_img_wrap">
+			<div class="syUpload_img_list">
+				<img src="add.png" class="imgPic1"/>
+				<input type="hidden" class="hiddenValue1"/>
+				<input type="file" name="file" class="file img1" accept="image/png,image/jpg,image/jpeg" onchange="uploadFile('hiddenValue1','img1','imgPic1')" />
+			</div>
+		</div>
+		<div class="syUpload_img_wrap">
+			<div class="syUpload_img_list">
+				<img src="add.png" class="imgPic2"/>
+				<input type="hidden" class="hiddenValue2"/>
+				<input type="file" name="file" class="file img2" accept="image/png,image/jpg,image/jpeg" onchange="uploadFile('hiddenValue2','img2','imgPic2')" />
+			</div>
+			<div class="syUpload_img_list">
+				<img src="add.png" class="imgPic3"/>
+				<input type="hidden" class="hiddenValue3"/>
+				<input type="file" name="file" class="file img3" accept="image/png,image/jpg,image/jpeg" onchange="uploadFile('hiddenValue3','img3','imgPic3')" />
+			</div>
+		</div>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		
+		<script src="js/layer.js"></script>
+		<script src="upload.js"></script>
+	</body>
+</html>
