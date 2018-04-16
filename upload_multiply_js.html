@@ -134,67 +134,68 @@
 
 	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <script type="text/javascript">
-        
-
         function imgChange(obj1, obj2) {
-            var file = $("#file")[0];//获取点击的文本框
-            var imgContainer = $("."+obj1);//存放图片的父级元素  z_photo
-            var fileList = file.files;//获取的图片文件
-            var input = $("."+obj2)[0];//文本框的父级元素  z_file
-            var imgArr = [];
-            for (var i = 0; i < fileList.length; i++) {//遍历获取到得图片文件
-                var imgUrl = window.URL.createObjectURL(file.files[i]);
-                imgArr.push(imgUrl);
-                var imgAdd = "<div class='z_addImg'><img src='" + imgArr[i] + "'/></div>";
-                imgContainer.append(imgAdd);
-//              imgContainer.prepend(imgAdd);
-            };
-            var formData = new FormData();
-			formData.append("file",$("#file")[0].files[0])
-			$.ajax({
-				url: 'http://dev.pandawanwan.cn/uploadIdNum',
-				type: 'POST',
-				cache: false,
-				data: formData,
-				processData: false,
-				contentType: false,
-				beforeSend: function(request) {
-					request.setRequestHeader("userId", 4);
-				},
-				success: function(res) {
-					console.log(res)
-					if(res == "-1") { /*失败*/
-						
-					} else { /*成功*/
-						
-					}
-				},
-				error: function(res) {
-					
-				}
-			})
-            imgRemove();
-        };
-		 function imgRemove() {
-            for (var j = 0; j < $(".z_addImg").length; j++) {
-            	$(".z_addImg").eq(j).on("click",function(){
-            		var _this = $(this);
-            		$(".z_mask").show()
-                    $(".z_cancel").on("click",function(){
-                    	$(".z_mask").hide()
-                    })
-                    $(".z_sure").on("click",function(){
-                    	$(".z_mask").hide();
-                    	_this.remove()
-                    })
-            	})
-            };
-        };
-
+			//获取点击的文本框
+			var file = document.getElementById("file");
+			//存放图片的父级元素
+			var imgContainer = document.getElementsByClassName(obj1)[0];
+			//获取的图片文件
+			var fileList = file.files;
+			//文本框的父级元素
+			var input = document.getElementsByClassName(obj2)[0];
+			var imgArr = [];
+			var _imgLen = $(".z_addImg:visible").length;//已有图片个数
+			var _chooseLen = fileList.length;
+			if(_chooseLen>5-_imgLen){
+				//遍历获取到得图片文件
+				for(var i = 0; i < 5-_imgLen; i++) {
+					var imgUrl = window.URL.createObjectURL(file.files[i]);
+					imgArr.push(imgUrl);
+					var img = document.createElement("img");
+					img.setAttribute("src", imgArr[i]);
+					var imgAdd = document.createElement("div");
+					imgAdd.setAttribute("class", "z_addImg");
+					imgAdd.appendChild(img);
+					imgContainer.insertBefore(imgAdd,document.getElementsByClassName("z_file")[0]);
+				};
+			}else{
+				//遍历获取到得图片文件
+				for(var i = 0; i < fileList.length; i++) {
+					var imgUrl = window.URL.createObjectURL(file.files[i]);
+					imgArr.push(imgUrl);
+					var img = document.createElement("img");
+					img.setAttribute("src", imgArr[i]);
+					var imgAdd = document.createElement("div");
+					imgAdd.setAttribute("class", "z_addImg");
+					imgAdd.appendChild(img);
+					imgContainer.insertBefore(imgAdd, document.getElementsByClassName("z_file")[0]);
+				};
+			}
+			
+			imgRemove();
+		};
 		
-
-
-
+		function imgRemove() {
+			var imgList = document.getElementsByClassName("z_addImg");
+			var mask = document.getElementsByClassName("z_mask")[0];
+			var cancel = document.getElementsByClassName("z_cancel")[0];
+			var sure = document.getElementsByClassName("z_sure")[0];
+			for(var j = 0; j < imgList.length; j++) {
+				imgList[j].index = j;
+				imgList[j].onclick = function() {
+					var t = this;
+					mask.style.display = "block";
+					cancel.onclick = function() {
+						mask.style.display = "none";
+					};
+					sure.onclick = function() {
+						mask.style.display = "none";
+						t.remove()
+					};
+		
+				}
+			};
+		};
 
       
 
