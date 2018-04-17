@@ -85,7 +85,7 @@ $(".content-img-list").on("click", '.content-img-list-item a', function() {
 	}
 });
 
-//删除
+//获取图片index下标属性，通过js的splice方法删除数组元素，重新调用addNewContent方法遍历图片数组显示预览图片
 function removeImg(obj, index) {
 	imgSrc.splice(index, 1);
 	imgFile.splice(index, 1);
@@ -94,7 +94,7 @@ function removeImg(obj, index) {
 	addNewContent(boxId);
 }
 
-//图片展示
+//创建一个addNewContent方法用于动态展示添加的图片实现图片预览，在每次上传图片的时候调用该方法
 function addNewContent(obj) {
 	// console.log(imgSrc)
 	$(obj).html("");
@@ -104,7 +104,7 @@ function addNewContent(obj) {
 	}
 }
 
-//建立一個可存取到該file的url
+//getObjectURL方法是一个用于获取本地图片的地址，使用该url可以显示图片
 function getObjectURL(file) {
 	var url = null;
 	if(window.createObjectURL != undefined) { // basic
